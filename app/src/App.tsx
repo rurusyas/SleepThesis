@@ -37,7 +37,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
   useEffect(() => { init(); }, [init]);
 
   const inner = (
-    <div className="app">
+    <div className="app web-app">
       {demo && <div className="island" />}
       <div className="stars" />
       <div className="scroll">

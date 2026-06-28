@@ -47,7 +47,7 @@ async def leaderboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "<b>Лидерборд Orca</b>",
         f"<i>{orca_voice.NARR_LEADERBOARD}</i>",
         "",
-        "<b>Топ-10</b>",
+        "\n<b>Топ-10</b>\n",
     ]
     for i, row in enumerate(rows[:10], start=1):
         name = row.get("name") or "Без имени"
@@ -70,9 +70,9 @@ async def leaderboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
         lines.append("")
         lines.append("<i>Тебя ещё нет в рейтинге — нужно хотя бы одну запись в дневнике за 7 дней.</i>")
 
-    lines.append("")
+    lines.append("\n")
     lines.append(
-        "<blockquote>Балл — среднее качество сна (1–5) "
+        "<blockquote>Балл — среднее качество сна (1-5) "
         "за последние 7 дней по твоим записям в дневнике.</blockquote>"
     )
     text = "\n".join(lines)

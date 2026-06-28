@@ -3,6 +3,7 @@ from config import API_BASE, BOT_TOKEN
 from services.api_client import ApiClient
 from handlers import (
     apnea,
+    cancel,
     diary,
     focus,
     help as help_handler,
@@ -55,6 +56,9 @@ def main():
     for h in history.get_handlers():
         app.add_handler(h)
     for h in help_handler.get_handlers():
+        app.add_handler(h)
+
+    for h in cancel.get_handlers():
         app.add_handler(h)
 
     app.run_polling()

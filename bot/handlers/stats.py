@@ -4,7 +4,7 @@ from telegram.ext import CommandHandler, ContextTypes, MessageHandler, filters
 from keyboards.menu import main_menu
 from services import orca_voice
 from services.charts import weekly_diary_chart
-from services.gamification import current_streak, depth_card
+from services.gamification import current_streak, depth_card_no_bar as depth_card
 
 
 def _val(x, suffix=""):

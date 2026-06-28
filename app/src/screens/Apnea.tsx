@@ -158,8 +158,8 @@ export default function Apnea() {
                 <div className="ring a" />
                 <div className="ring b" />
                 <div className="big" style={{ position: "relative", zIndex: 3 }}>
-                  <b style={{ color: colorMap[s.tone as keyof typeof colorMap] }}>{s.label}</b>
-                  <span>{s.desc}</span>
+                  <b style={{ color: colorMap[s.tone as keyof typeof colorMap], fontSize: 16, fontWeight: 700 }}>{s.label}</b>
+                  <span style={{ fontSize: 12, opacity: 0.85, display: "block", marginTop: 4 }}>{s.desc}</span>
                 </div>
               </div>
               <div className="row" style={{ marginTop: 8 }}>

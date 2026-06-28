@@ -26,12 +26,16 @@ export function Icon({ name, size = 20, style, className }: { name: keyof typeof
   );
 }
 
-export function Orca({ size = 40, style }: { size?: number; style?: CSSProperties }) {
+export function Orca({ size = 40, style, className }: { size?: number; style?: CSSProperties; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 120 120" style={style}>
-      <path d="M60 14c-9 0-16 5-20 13-3-7-9-12-9-12s1 9 4 15c-9 6-15 17-15 30 0 22 18 38 40 38 6 0 11-1 16-3l16 9-4-17c7-7 11-16 11-27 0-26-18-46-39-46z" fill="#0a1130" stroke="rgba(233,237,255,.85)" strokeWidth="1.2" />
-      <path d="M60 26c-6 0-11 4-13 10 8-2 17-2 25 1-2-7-6-11-12-11z" fill="rgba(233,237,255,.92)" />
-      <circle cx="46" cy="52" r="3.4" fill="#E9EDFF" />
-    </svg>
+    <img
+      src="/orca_logo.png"
+      width={size}
+      height={size}
+      alt="Orca"
+      draggable={false}
+      style={{ display: "block", borderRadius: size * 0.22, objectFit: "cover", ...style }}
+      className={className}
+    />
   );
 }

@@ -16,9 +16,9 @@ class ApiClient:
                 return None
             r.raise_for_status()
             return r.json()
-        except httpx.HTTPError:
-            return None
-        except ValueError:
+        except Exception as e:
+            import sys
+            print(f"[api_client] {method} {url} failed: {e!r}", file=sys.stderr)
             return None
 
     async def ensure_user(self, tg_id, name=None):

@@ -32,6 +32,10 @@ body{margin:0;font-family:var(--font);color:var(--text);background:var(--abyss);
 .scroll{position:relative;z-index:2;height:100dvh;overflow-y:auto;padding:18px 18px 92px;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
 
+.web-app{font-family:"Fraunces",Georgia,serif;font-optical-sizing:auto}
+.web-app h1,.web-app h2,.web-app h3,.web-app .ttl{font-family:"Fraunces",Georgia,serif;font-weight:600;font-variation-settings:"opsz" 48}
+.web-app .mono{font-family:var(--mono)}
+
 /* demo iphone frame */
 .stage{min-height:100dvh;display:grid;place-items:center;padding:28px;
   background:radial-gradient(900px 600px at 20% 0,#0b1140,transparent 55%),radial-gradient(800px 600px at 100% 20%,#11204e,transparent 50%),var(--abyss)}

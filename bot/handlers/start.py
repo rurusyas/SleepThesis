@@ -62,11 +62,10 @@ WELCOME = (
     "<b>Привет. Я Orca.</b>\n"
     "Косатка, которая плавает рядом и помогает тебе со сном, стрессом и фокусом.\n\n"
     "<i>Сейчас короткий онбординг — 9 вопросов на пару минут. "
-    "Из ответов я посчитаю твои индексы Сна, Стресса и Фокуса. "
-    "Их можно перепройти в любой момент командой /start.</i>\n\n"
+    "Из ответов я посчитаю твои индексы Сна, Стресса и Фокуса.</i>\n\n"
     "<blockquote>"
-    "Цифры — это не оценка тебя. Это начальная точка, от которой "
-    "видно прогресс. Орка не судит — Орка плывёт рядом."
+    "Цифры — это начальная точка, от которой "
+    "видно прогресс."
     "</blockquote>"
 )
 
@@ -139,6 +138,7 @@ async def save_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if next_state >= len(questions):
         user = update.effective_user
         api = context.application.bot_data["api"]
+        await update.message.reply_text("Считаю индексы…")
         data = await api.create_user(str(user.id), user.full_name, context.user_data["onboarding"])
         if not data:
             await update.message.reply_text(
@@ -177,4 +177,5 @@ def get_handler():
             CommandHandler("cancel", cancel),
             MessageHandler(filters.Regex("^Отмена$"), cancel),
         ],
+        allow_reentry=True,
     )

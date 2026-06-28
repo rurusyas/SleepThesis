@@ -134,3 +134,20 @@ def depth_card(streak: int) -> str:
         f"<blockquote>{lvl.blurb}</blockquote>",
     ]
     return "\n".join(lines)
+
+
+def depth_card_no_bar(streak: int) -> str:
+    lvl = depth_for_streak(streak)
+    if lvl.next_threshold is not None:
+        days_to_next = max(0, lvl.next_threshold - streak)
+        next_line = f"<i>До следующей глубины: {days_to_next} дн.</i>"
+    else:
+        next_line = "<i>Это максимальный уровень.</i>"
+    lines = [
+        f"<b>{lvl.emoji} {lvl.name}</b>",
+        f"стрик {streak} дн.",
+        next_line,
+        "",
+        f"<blockquote>{lvl.blurb}</blockquote>",
+    ]
+    return "\n".join(lines)

@@ -47,11 +47,115 @@ export function createSoundEngine() {
     nodes = [];
   }
 
+  function rainBuffer(ctx: AudioContext) {
+    const len = ctx.sampleRate * 4;
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    const dropsPerSec = 120;
+    const total = Math.floor((dropsPerSec * len) / ctx.sampleRate);
+    for (let k = 0; k < total; k++) {
+      const pos = Math.floor(Math.random() * len);
+      const dur = Math.floor(ctx.sampleRate * (0.008 + Math.random() * 0.022));
+      const freq = 2000 + Math.random() * 4000;
+      const amp = 0.3 + Math.random() * 0.7;
+      for (let i = 0; i < dur && pos + i < len; i++) {
+        const t = i / ctx.sampleRate;
+        const env = Math.exp(-t / 0.02);
+        d[pos + i] += amp * env * Math.sin(2 * Math.PI * freq * t);
+      }
+    }
+    for (let i = 0; i < len; i++) if (d[i] > 1) d[i] = 1; else if (d[i] < -1) d[i] = -1;
+    return buf;
+  }
+
+  function crackleBuffer(ctx: AudioContext) {
+    const len = ctx.sampleRate * 6;
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    const eventsPerSec = 9;
+    const total = Math.floor((eventsPerSec * len) / ctx.sampleRate);
+    for (let k = 0; k < total; k++) {
+      const pos = Math.floor(Math.random() * len);
+      const dur = Math.floor(ctx.sampleRate * (0.04 + Math.random() * 0.11));
+      const freq = 300 + Math.random() * 600;
+      const amp = 0.3 + Math.random() * 0.7;
+      const decay = 0.04 + Math.random() * 0.08;
+      for (let i = 0; i < dur && pos + i < len; i++) {
+        const t = i / ctx.sampleRate;
+        const env = Math.exp(-t / decay);
+        d[pos + i] += amp * env * (Math.sin(2 * Math.PI * freq * t) + (Math.random() * 2 - 1) * 0.5);
+      }
+    }
+    const bigPerSec = 1.5;
+    const bigTotal = Math.floor((bigPerSec * len) / ctx.sampleRate);
+    for (let k = 0; k < bigTotal; k++) {
+      const pos = Math.floor(Math.random() * len);
+      const dur = Math.floor(ctx.sampleRate * (0.2 + Math.random() * 0.2));
+      const freq = 150 + Math.random() * 250;
+      for (let i = 0; i < dur && pos + i < len; i++) {
+        const t = i / ctx.sampleRate;
+        const env = Math.exp(-t / 0.12);
+        d[pos + i] += 0.9 * env * (Math.random() * 2 - 1) * Math.sin(2 * Math.PI * freq * t);
+      }
+    }
+    for (let i = 0; i < len; i++) if (d[i] > 1) d[i] = 1; else if (d[i] < -1) d[i] = -1;
+    return buf;
+  }
+
   function play(def: SoundDef, volume = 0.6) {
     const c = ensure();
     if (c.state === "suspended") c.resume();
     stopNodes();
     const p = def.params as any;
+
+    if (def.type === "rain") {
+      const bg = c.createBufferSource();
+      bg.buffer = noiseBuffer(c, (p.color as string) || "pink");
+      bg.loop = true;
+      const bgGain = c.createGain(); bgGain.gain.value = 0.3;
+      const bgFilter = c.createBiquadFilter(); bgFilter.type = "lowpass"; bgFilter.frequency.value = 1200;
+      bg.connect(bgFilter); bgFilter.connect(bgGain); bgGain.connect(master!);
+
+      const drops = c.createBufferSource();
+      drops.buffer = rainBuffer(c);
+      drops.loop = true;
+      const hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 1800;
+      const dropsGain = c.createGain(); dropsGain.gain.value = 0.7;
+      drops.connect(hp); hp.connect(dropsGain); dropsGain.connect(master!);
+
+      const lfo = c.createOscillator();
+      const lfoDepth = c.createGain();
+      lfo.frequency.value = 0.05;
+      lfoDepth.gain.value = 0.4;
+      lfo.connect(lfoDepth); lfoDepth.connect(dropsGain.gain);
+      lfo.start();
+
+      bg.start(); drops.start();
+      nodes.push(bg, drops, lfo);
+      fade(volume, 600);
+      return;
+    }
+
+    if (def.type === "crackle") {
+      const crk = c.createBufferSource();
+      crk.buffer = crackleBuffer(c);
+      crk.loop = true;
+      const bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 500; bp.Q.value = 0.7;
+      const crkGain = c.createGain(); crkGain.gain.value = 0.8;
+      crk.connect(bp); bp.connect(crkGain); crkGain.connect(master!);
+
+      const hum = c.createOscillator();
+      hum.frequency.value = 90;
+      const humGain = c.createGain(); humGain.gain.value = 0.08;
+      hum.connect(humGain); humGain.connect(master!);
+      hum.start();
+
+      crk.start();
+      nodes.push(crk, hum);
+      fade(volume, 600);
+      return;
+    }
+
     const color = (p.color as string) || "white";
     const src = c.createBufferSource();
     src.buffer = noiseBuffer(c, color);

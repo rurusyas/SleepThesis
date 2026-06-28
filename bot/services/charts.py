@@ -282,9 +282,9 @@ def index_dial(sleep, stress, focus):
         ax.plot(theta_val, [1.0] * 100, color=color, linewidth=12, solid_capstyle="round")
 
         # number (in axes coordinates so it renders predictably regardless of polar projection)
-        ax.text(0.5, 0.42, f"{int(round(val))}", color=TEXT, fontsize=30,
+        ax.text(0.5, 0.55, f"{int(round(val))}", color=TEXT, fontsize=30,
                 fontweight="bold", ha="center", va="center", transform=ax.transAxes)
-        ax.text(0.5, 0.22, label, color=TEXT_FAINT, fontsize=11, ha="center",
+        ax.text(0.5, 0.32, label, color=TEXT_FAINT, fontsize=11, ha="center",
                 va="center", transform=ax.transAxes)
 
         ax.set_ylim(0, 1.3)

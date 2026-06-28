@@ -19,37 +19,11 @@ _SOUND_META = {
 
 
 async def sounds(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    lines = [
-        "<b>Звуки для сна и фокуса</b>",
-        f"<i>{orca_voice.NARR_SOUNDS}</i>",
-        "",
-    ]
-    for sid, (emoji, desc) in _SOUND_META.items():
-        # Pretty title from id
-        title_map = {
-            "white-noise":  "Белый шум",
-            "pink-noise":   "Розовый шум",
-            "brown-noise":  "Коричневый шум",
-            "ocean-waves":  "Океан",
-            "rain":         "Дождь",
-            "crackle":      "Костёр",
-            "night-drone":  "Ночной гул",
-            "fan":          "Вентилятор",
-        }
-        lines.append(f"{emoji}  <b>{title_map.get(sid, sid)}</b>  —  <i>{desc}</i>")
-
-    lines.extend([
-        "",
-        "<blockquote expandable>"
-        "Звуки сгенерированы кодом, а не записаны микрофоном. "
-        "Это значит — без лицензий, без артефактов сжатия, и любой звук можно "
-        "крутить часами без зацикливания. Параметры (плотность, фильтрация, "
-        "глубина LFO) живут в content/sounds.json и приходят в плеер приложения."
-        "</blockquote>",
-        "",
-        "<i>Воспроизведение — в приложении Orca, с таймером и плавным fade-out.</i>",
-    ])
-    text = "\n".join(lines)
+    text = (
+        "<b>Звуки для сна и фокуса</b>\n\n"
+        "Воспроизведение — в приложении Orca, с таймером и плавным fade-out.\n\n"
+        "Доступны в MiniApp: https://t.me/orca_miniapp_bot/orcathesleepwhale"
+    )
 
     markup = None
     if MINIAPP_URL:

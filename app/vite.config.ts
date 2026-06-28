@@ -5,7 +5,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: mode === "telegram" ? "telegram.html" : "index.html",
+      input: mode === "telegram" ? "telegram.html" : mode === "demo" ? "demo.html" : "index.html",
     },
   },
   test: { environment: "node", include: ["src/**/*.test.ts"] },
