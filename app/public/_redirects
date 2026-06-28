@@ -1,0 +1,4 @@
+# Cloudflare Pages routing rules
+# Demo and Telegram are static HTML files, not SPA routes — never rewrite them.
+/demo.html      /demo.html      200
+/telegram.html  /telegram.html  200

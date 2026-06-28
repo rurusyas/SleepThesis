@@ -32,9 +32,14 @@ function TabBarMaybe() {
   return <TabBar />;
 }
 
-export default function App({ demo = false }: { demo?: boolean }) {
+export default function App({ demo: demoProp = false }: { demo?: boolean }) {
   const init = useStore((s) => s.init);
   useEffect(() => { init(); }, [init]);
+
+  const demo = demoProp
+    || (typeof window !== "undefined" && /demo\.html/.test(window.location.pathname))
+    || (typeof window !== "undefined" && /[?&]demo(=1|=true)?\b/.test(window.location.search))
+    || ((import.meta as any).env?.MODE === "demo");
 
   const inner = (
     <div className="app web-app">
@@ -62,5 +67,16 @@ export default function App({ demo = false }: { demo?: boolean }) {
     </div>
   );
 
-  return <HashRouter>{demo ? <div className="stage"><div className="device-wrap"><div className="device">{inner}</div></div></div> : inner}</HashRouter>;
+  return (
+    <HashRouter>
+      {demo ? (
+        <div className="stage">
+          <div className="device-wrap">
+            <div className="power-btn" />
+            <div className="device">{inner}</div>
+          </div>
+        </div>
+      ) : inner}
+    </HashRouter>
+  );
 }

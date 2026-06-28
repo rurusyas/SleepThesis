@@ -5,12 +5,12 @@ import httpx
 class ApiClient:
     def __init__(self, base_url):
         self.base_url = base_url
-        self.client = httpx.AsyncClient(base_url=base_url, timeout=httpx.Timeout(15.0, connect=8.0))
+        self.client = httpx.AsyncClient(base_url=base_url, timeout=httpx.Timeout(8.0, connect=5.0))
 
     async def close(self):
         await self.client.aclose()
 
-    async def request(self, method, url, retries=2, **kwargs):
+    async def request(self, method, url, retries=0, **kwargs):
         last_err = None
         for attempt in range(retries + 1):
             try:

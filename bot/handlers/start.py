@@ -137,29 +137,59 @@ async def save_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     next_state = state + 1
 
     if next_state >= len(questions):
+        import asyncio, sys, traceback
         user = update.effective_user
         api = context.application.bot_data["api"]
         try:
             await update.message.reply_text("Считаю индексы…")
         except Exception:
             pass
+
+        # Strict timeout: 10 seconds max. If backend hangs, we tell the user immediately.
         data = None
         try:
-            data = await api.create_user(str(user.id), user.full_name, context.user_data["onboarding"])
+            data = await asyncio.wait_for(
+                api.create_user(str(user.id), user.full_name, context.user_data["onboarding"]),
+                timeout=10.0,
+            )
+        except asyncio.TimeoutError:
+            print("[start.save_answer] create_user timed out after 10s", file=sys.stderr)
         except Exception as e:
-            import sys, traceback
             print(f"[start.save_answer] create_user crashed: {e!r}", file=sys.stderr)
             traceback.print_exc(file=sys.stderr)
+
         if not data:
+            # Compute indices locally as a fallback so the user always gets a usable result
             try:
-                await update.message.reply_text(
-                    "Не смог сохранить профиль — попробуй ещё раз через минуту или нажми /reset для возврата в меню.",
-                    reply_markup=main_menu(),
+                from services.local_indices import compute_indices_local
+                idx = compute_indices_local(context.user_data["onboarding"])
+                fallback_msg = (
+                    "<b>Готово · профиль создан локально</b>\n\n"
+                    "Бэкенд сейчас не отвечает, индексы посчитал на стороне бота:\n"
+                    f"• Сон  <b>{idx['sleep_index']}</b>\n"
+                    f"• Стресс  <b>{idx['stress_index']}</b>\n"
+                    f"• Фокус  <b>{idx['focus_index']}</b>\n\n"
+                    "<i>Когда бэкенд оживёт — можно пройти онбординг снова через /start, тогда данные синхронизируются.</i>"
                 )
-            except Exception:
-                pass
+                try:
+                    await update.message.reply_text(fallback_msg, parse_mode="HTML", reply_markup=main_menu())
+                except Exception:
+                    await update.message.reply_text(
+                        f"Сон {idx['sleep_index']} · Стресс {idx['stress_index']} · Фокус {idx['focus_index']}. Главное меню ниже.",
+                        reply_markup=main_menu(),
+                    )
+            except Exception as e:
+                print(f"[start.save_answer] local fallback failed: {e!r}", file=sys.stderr)
+                try:
+                    await update.message.reply_text(
+                        "Бэкенд не отвечает, и локально не вышло посчитать. Главное меню. Попробуй /start позже или /reset.",
+                        reply_markup=main_menu(),
+                    )
+                except Exception:
+                    pass
             context.user_data.pop("onboarding_state", None)
             return ConversationHandler.END
+
         context.user_data["uid"] = data["id"]
         result = (
             "<b>Готово · профиль создан</b>\n\n"
@@ -173,7 +203,6 @@ async def save_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             await update.message.reply_text(result, parse_mode="HTML", reply_markup=main_menu())
         except Exception as e:
-            import sys
             print(f"[start.save_answer] final reply failed: {e!r}", file=sys.stderr)
             try:
                 await update.message.reply_text("Профиль создан. Главное меню ниже.", reply_markup=main_menu())
