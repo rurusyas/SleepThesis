@@ -12,7 +12,7 @@
 - `diagrams/` — 13 диаграмм Mermaid (.mmd) + экспорт в .svg
 - `testing/` — план и результаты тестов
 
-## 1. Веб-демо (для питча)
+## 1. Веб-демо
 
 ```bash
 cd app && npm i && npm run build:demo
