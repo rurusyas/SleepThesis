@@ -1,6 +1,6 @@
 # Orca — фронтенд (React + Vite + Capacitor)
 
-Один кодбейз: приложение в браузере, веб-демо, Telegram Mini App, сборка в iOS.
+Приложение в браузере, веб-демо, Telegram Mini App, сборка в iOS.
 
 ## Telegram Mini App
 
@@ -36,9 +36,3 @@ iOS через Capacitor: `npm run build && npx cap add ios && npx cap open ios`
 - `src/screens/tg/` — оболочка и главная Mini App
 - `src/screens/` — экраны (общие для всех таргетов)
 - `preview/orca_screens.html` — статичный дизайн-референс всех экранов
-
-## Статус Mini App
-
-- Чекпойнт 1 (готово): SDK, тема, навигация, дизайн-система, главный экран-обзор
-- Чекпойнт 2 (готово): дневник (ввод + недельный график), звуки (живой Web Audio + таймер), образование (карточки из articles.json)
-- Чекпойнт 3 (готово): Orca AI чат (SSE-стрим + typing + фолбэк), лидерборд (api с мок-фолбэком), haptics

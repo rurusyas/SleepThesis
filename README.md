@@ -75,7 +75,7 @@ make diagrams   # экспорт .mmd -> .svg через mermaid-cli
 | `backend/` | FastAPI + SQLite/Postgres, 8 эндпоинтов + `/health`, **14 pytest** ✓ |
 | `apnea_model/` | VAD-эвристика по аудио (numpy + soundfile), proof-of-concept для демо; реальная SpO2-модель (UCDDB, ROC AUC 0.903) для iOS+HealthKit |
 | `bot/` | python-telegram-bot, контракт с бэкендом проверен |
-| `app/` веб | 9 экранов без заглушек: Onboarding, Home, Apnea, Diary, Sounds, Education, Chat, Focus, Profile, Routine, Alarm |
+| `app/` веб | 8+ экранов: Onboarding, Home, Apnea, Diary, Sounds, Education, Chat, Focus, Profile, Routine и другие |
 | `app/` Mini App | 6 экранов + упрощённый онбординг (4 шага), единый аккаунт по `tg_id` |
 | `app/` тесты | **12 vitest** ✓ в `app/src/__tests__/` (indices, time, sse, sound) |
 | `content/` | 10 статей с DOI, 8 звуков для Web Audio синтеза |
